@@ -28,8 +28,8 @@ module.exports = {
 
     async createThought(req, res) {
         try {
-            const dbThoughtData = await Thought.create(req.body);
-            res.json(dbThoughtData);
+            const thought = await Thought.create(req.body);
+            res.json(thought;
         } catch (err) {
             res.status(500).json(err);
         }
@@ -40,7 +40,7 @@ module.exports = {
             const thought = await Thought.findOneAndUpdate(
                 { _id: req.params.thoughttId },
                 { $set: req.body },
-                { runValidators: true, new: true }
+                { new: true }
             );
 
             if (!thought) {
@@ -59,7 +59,7 @@ module.exports = {
             const thought = await Thought.findOneAndUpdate(
                 { _id: req.params.thoughtId },
                 { $pull: { thoughts: { reactionId: req.params.reactionId } } },
-                { runValidators: true, new: true }
+                { new: true }
             )
 
             if (!thought) {
@@ -85,7 +85,7 @@ module.exports = {
         try {
             const dbReactionData = await Reaction.findOneAndRemove(
                 { _id: req.params.reactionId },
-                { runValidators: true, new: true }
+                { new: true }
             )
 
             if (!dbReactionData) {

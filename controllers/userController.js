@@ -40,7 +40,7 @@ module.exports = {
             const user = await User.findOneAndUpdate(
                 { _id: req.params.userId },
                 { $set: req.body },
-                { runValidators: true, new: true }
+                { new: true }
             );
 
             if (!user) {
@@ -73,7 +73,7 @@ module.exports = {
             const newUser = await User.findByIdAndUpdate(
                 { _id: req.params.userId },
                 { $addToSet: { friends: friendId } },
-                { runValidators: true, new: true }
+                { new: true }
             );
 
             const newFriend = UserUser.findByIdAndUpdate(

@@ -1,12 +1,13 @@
 const { default: mongoose } = require('mongoose');
 const Thought = require('../models/Thought');
 const User = require('../models/User');
-const getRandomthoughts = require('../utils/data')
 
 async function seedDatabase() {
   try {
 
-    await mongoose.connect('mongodb://127.0.0.1:27017/social_network', {
+    await mongoose.connect('mongodb://127.0.0.1:27017/Social_NetworkDB', {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
     });
 
 
@@ -30,8 +31,8 @@ async function seedDatabase() {
     });
 
     const user4 = await User.create({
-      username: 'jeff prono',
-      email: 'prono@gmail.com'
+      username: 'marsha prono',
+      email: 'marsh@gmail.com'
     });
 
     const user5 = await User.create({
@@ -40,27 +41,27 @@ async function seedDatabase() {
     });
 
     const thought1 = await Thought.create({
-      thoughtText: getRandomthoughts,
+      thoughtText: 'I wonder if wolves dream',
       username: user1.username,
     });
 
     const thought2 = await Thought.create({
-      thoughtText: getRandomthoughts,
+      thoughtText: 'I wonder if bugs dream',
       username: user2.username,
     });
 
     const thought3 = await Thought.create({
-      thoughtText: getRandomthoughts,
+      thoughtText: 'I wonder if wolves sleep',
       username: user3.username,
     });
 
     const thought4 = await Thought.create({
-      thoughtText: getRandomthoughts,
+      thoughtText: 'I wonder if cats sleep',
       username: user4.username,
     });
 
     const thought5 = await Thought.create({
-      thoughtText: getRandomthoughts,
+      thoughtText: 'I wonder if dogs dream',
       username: user5.username,
     });
 
