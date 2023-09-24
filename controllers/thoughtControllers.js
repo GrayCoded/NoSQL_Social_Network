@@ -1,4 +1,4 @@
-const { User, Thought } = require('../models/index');
+const Thought = require('../models/index');
 
 module.exports = {
 
@@ -62,7 +62,7 @@ module.exports = {
                 { runValidators: true, new: true }
             )
 
-            if (!video) {
+            if (!thought) {
                 return res.status(404).json({ message: 'No thought with this id!' });
             }
 
@@ -83,17 +83,17 @@ module.exports = {
 
     async deleteReaction(req, res) {
         try {
-            const dbReactionData = await React.findOneAndUpdate(
+            const dbReactionData = await React.findOneAndRemove(
                 { _id: req.params.thoughtId },
                 { $pull: { thoughts: { reactionId: req.params.reactionId } } },
                 { runValidators: true, new: true }
             )
 
-            if (!video) {
-                return res.status(404).json({ message: 'No thought with this id!' });
+            if (!dbReactionData) {
+                return res.status(404).json({ message: 'No reaction with this id!' });
             }
 
-            res.json(thought);
+            res.json(dbReactionData);
         } catch (err) {
             res.status(500).json(err);
         }

@@ -28,12 +28,12 @@ module.exports = {
     // create a new user
     async createUser(req, res) {
         try {
-          const dbUserData = await User.create(req.body);
-          res.json(dbUserData);
+            const dbUserData = await User.create(req.body);
+            res.json(dbUserData);
         } catch (err) {
-          res.status(500).json(err);
+            res.status(500).json(err);
         }
-      },
+    },
 
     async updateUser(req, res) {
         try {
@@ -57,7 +57,7 @@ module.exports = {
     async deleteUser(req, res) {
         try {
             const user = await User.findOneAndRemove({ _id: req.params.userId });
-            await Thought.deleteMany({_id:{$in: user.thoutghts }});
+            await Thought.deleteMany({ _id: { $in: user.thoutghts } });
             if (!user) {
                 return res.status(404).json({ message: 'No user with this id!' });
             }
@@ -70,22 +70,44 @@ module.exports = {
 
     async addFriend(req, res) {
         try {
-          const { userId, friendId } = req.params;
-          const user = await User.findIdAndUpdate(
-            userId,
-            {$addToSet: { friends: userId}},
-            {new:true}
-          );
-
-          const updateFriend = await (req, res) {
-            try {
-              const { userId, friendId } = req.params;
-              const user = await User.findIdAndUpdate(
+            const { userId, friendId } = req.params;
+            const user = await User.findIdAndUpdate(
                 userId,
-                {$addToSet: { friends: userId}},
-                {new:true}
-             );
-
+                { $addToSet: { friends: friendId } },
+                { new: true }
+            )
         }
-    };
+    },
 
+    async updateFriend(req, res) {
+        const updateFriend = await User.findIdAndUpDate(
+            friendId,
+            { $addToSet: { friends: friendId } },
+            { new: true }
+        );
+
+        if (!updateFriend) {
+            return res.status(404).json({ message: 'No user or friend found with this id!' });
+        }  
+    },
+
+    async removeFriend(req, res) {
+        try {
+          const user = await User.findOneAndUpdate(
+            { _id: req.params.userId },
+            { $pull: { assignment: { assignmentId: req.params.assignmentId } } },
+            { runValidators: true, new: true }
+          );
+    
+          if (!student) {
+            return res
+              .status(404)
+              .json({ message: 'No student found with that ID :(' });
+          }
+    
+          res.json(student);
+        } catch (err) {
+          res.status(500).json(err);
+        }
+      },
+};
