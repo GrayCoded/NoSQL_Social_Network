@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const { Schema, model } = require('mongoose');
 
 // Schema to create User model
@@ -32,12 +31,12 @@ const userSchema = new Schema(
       },
     ],
   },
-{
-  toJSON: {
-    virtuals: true,
-  },
-  id: false,
-});
+  {
+    toJSON: {
+      virtuals: true,
+    },
+    id: false,
+  });
 // Create a virtual property `friendCount` that gets and sets the user's friends
 userSchema
   .virtual('friendCount')

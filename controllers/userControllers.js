@@ -25,7 +25,7 @@ module.exports = {
             res.status(500).json(err);
         }
     },
-    // create a new user
+
     async createUser(req, res) {
         try {
             const dbUserData = await User.create(req.body);
@@ -57,7 +57,7 @@ module.exports = {
     async deleteUser(req, res) {
         try {
             const user = await User.findOneAndRemove({ _id: req.params.userId });
-            await Thought.deleteMany({ _id: { $in: user.thoutghts } });
+            await Thought.deleteMany({ _id: { $in: user.thoughts } });
             if (!user) {
                 return res.status(404).json({ message: 'No user with this id!' });
             }
@@ -88,26 +88,26 @@ module.exports = {
 
         if (!updateFriend) {
             return res.status(404).json({ message: 'No user or friend found with this id!' });
-        }  
+        }
     },
 
     async removeFriend(req, res) {
         try {
-          const user = await User.findOneAndUpdate(
-            { _id: req.params.userId },
-            { $pull: { assignment: { assignmentId: req.params.assignmentId } } },
-            { runValidators: true, new: true }
-          );
-    
-          if (!student) {
-            return res
-              .status(404)
-              .json({ message: 'No student found with that ID :(' });
-          }
-    
-          res.json(student);
+            const user = await User.findOneAndUpdate(
+                { _id: req.params.userId },
+                { $pull: { Thought: { thoughtId: req.params.thoughtId } } },
+                { runValidators: true, new: true }
+            );
+
+            if (!user) {
+                return res
+                    .status(404)
+                    .json({ message: 'No user found with that ID :(' });
+            }
+
+            res.json(user);
         } catch (err) {
-          res.status(500).json(err);
+            res.status(500).json(err);
         }
-      },
+    },
 };
