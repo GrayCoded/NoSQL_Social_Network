@@ -70,42 +70,53 @@ module.exports = {
 
     async addFriend(req, res) {
         try {
-            const { userId, friendId } = req.params;
-            const user = await User.findIdAndUpdate(
-                userId,
+            const newUser = await User.findByIdAndUpdate(
+                { _id: req.params.userId },
                 { $addToSet: { friends: friendId } },
+                { runValidators: true, new: true }
+            );
+
+            const newFriend = UserUser.findByIdAndUpdate(
+                { _id: req.params.friendId },
+                { $addToSet: { friends: userId } },
                 { new: true }
-            )
-        }
-    },
+            );
 
-    async updateFriend(req, res) {
-        const updateFriend = await User.findIdAndUpDate(
-            friendId,
-            { $addToSet: { friends: friendId } },
-            { new: true }
-        );
 
-        if (!updateFriend) {
-            return res.status(404).json({ message: 'No user or friend found with this id!' });
+            if (!newUser || !newFriend) {
+                return res
+                    .status(404)
+                    .json({ message: 'No user or friend found with that ID :(' })
+            }
+
+            res.status(200).json({ message: 'Friend added!', user: newUser });
+        } catch (err) {
+            res.status(500).json(err);
         }
     },
 
     async removeFriend(req, res) {
         try {
-            const user = await User.findOneAndUpdate(
+            const newUser = await User.findByIdAndUpdate(
                 { _id: req.params.userId },
-                { $pull: { Thought: { thoughtId: req.params.thoughtId } } },
+                { $pull: { friends: friendId } },
                 { runValidators: true, new: true }
             );
 
-            if (!user) {
+            const newFriend = UserUser.findByIdAndUpdate(
+                { _id: req.params.friendId },
+                { $pull: { friends: userId } },
+                { new: true }
+            );
+
+
+            if (!newUser || !newFriend) {
                 return res
                     .status(404)
-                    .json({ message: 'No user found with that ID :(' });
+                    .json({ message: 'No user or friend found with that ID :(' })
             }
 
-            res.json(user);
+            res.status(200).json({ message: 'Friend removed!', user: newUser });
         } catch (err) {
             res.status(500).json(err);
         }

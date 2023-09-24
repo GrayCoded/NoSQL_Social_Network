@@ -1,4 +1,4 @@
-const Thought = require('../models/index');
+const { Thought, Reaction } = require('../models/index');
 
 module.exports = {
 
@@ -25,7 +25,7 @@ module.exports = {
             res.status(500).json(err);
         }
     },
-    // create a new Thought
+
     async createThought(req, res) {
         try {
             const dbThoughtData = await Thought.create(req.body);
@@ -83,9 +83,8 @@ module.exports = {
 
     async deleteReaction(req, res) {
         try {
-            const dbReactionData = await React.findOneAndRemove(
-                { _id: req.params.thoughtId },
-                { $pull: { thoughts: { reactionId: req.params.reactionId } } },
+            const dbReactionData = await Reaction.findOneAndRemove(
+                { _id: req.params.reactionId },
                 { runValidators: true, new: true }
             )
 
@@ -97,7 +96,7 @@ module.exports = {
         } catch (err) {
             res.status(500).json(err);
         }
-    },
+    }
 
 };
 

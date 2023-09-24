@@ -1,7 +1,6 @@
 {
   "scripts": {
     "start": "node index",
-    "dev": "nodemon index",
     "seed": "node utils/seed"
   },
   "dependencies": {
