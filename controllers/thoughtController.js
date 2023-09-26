@@ -29,7 +29,7 @@ module.exports = {
     async createThought(req, res) {
         try {
             const thought = await Thought.create(req.body);
-            res.json(thought;
+            res.json(thought);
         } catch (err) {
             res.status(500).json(err);
         }
