@@ -13,7 +13,7 @@ module.exports = {
 
     async getSingleThought(req, res) {
         try {
-            const thought = await Thought.findOne({ _id: req.params.Id })
+            const thought = await Thought.findOne({ _id: req.params.thoughtId })
                 .select('-__v');
 
             if (!thought) {
@@ -38,7 +38,7 @@ module.exports = {
     async updateThought(req, res) {
         try {
             const thought = await Thought.findOneAndUpdate(
-                { _id: req.params.thoughttId },
+                { _id: req.params.thoughtId },
                 { $set: req.body },
                 { new: true }
             );
