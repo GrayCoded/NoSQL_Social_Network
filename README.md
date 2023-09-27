@@ -15,11 +15,11 @@ This challenge based application will allow for handling of large amounts of uns
 
 ## Installation
 
-Go to the application by clicking <a href="">here!</a>
+Go to the application by clicking <a href="https://github.com/GrayCoded/NoSQL_Social_Network">here!</a>
 
 ## Walkthrough
 
-Here is a video demonstarting how to use this application click <a href="">here!</a>
+Here is a video demonstarting how to use this application click <a href="https://drive.google.com/file/d/17SvM2YXbBjomzgbcxewxfB3zstyR0JM9/view">here!</a>
 
 ## License
 
