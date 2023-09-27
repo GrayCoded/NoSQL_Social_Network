@@ -1,100 +1,84 @@
-const mongoose = require('mongoose');
+const { default: mongoose } = require('mongoose');
 const Thought = require('../models/Thought');
 const User = require('../models/User');
 
 async function seedDatabase() {
   try {
+
     await mongoose.connect('mongodb://127.0.0.1:27017/Social_NetworkDB', {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
 
-    console.log('Connected to the database.');
 
     await User.deleteMany();
     await Thought.deleteMany();
 
-    console.log('Cleared existing data.');
 
-    const users = [
-      {
-        username: 'john mallen',
-        email: 'mallen@gmail.com',
-      },
-      {
-        username: 'Mike johns',
-        email: 'johnn@gmail.com'
-      },
-      {
-        username: 'Anne lynn',
-        email: 'anne@gmail.com'
-      },
-      {
-        username: 'marsha prono',
-        email: 'marsh@gmail.com'
-      },
-      {
-        username: 'jeff prono',
-        email: 'prono@gmail.com'
-      },
-    ];
+    const user1 = await User.create({
+      username: 'john mallen',
+      email: 'mallen@gmail.com',
+    });
 
-    const thoughts = [
-      {
-        "thoughtText": "I like Marshmallows"
-      },
-      {
-        "thoughtText": "I like chocolate"
-      },
-      {
-        "thoughtText": "I like birds"
-      },
-      {
-        "thoughtText": "I like Logs"
-      },
-      {
-        "thoughtText": "I like cats"
-      },
-      {
-        "thoughtText": "I like Sleds"
-      },
-      {
-        "thoughtText": "I like waterballonss"
-      },
-      {
-        "thoughtText": "I like logs"
-      },
-      {
-        "thoughtText": "I like dogs"
-      },
-      {
-        "thoughtText": "I like eatting"
-      },
-    ];
+    const user2 = await User.create({
+      username: 'Mike johns',
+      email: 'johnn@gmail.com'
+    });
 
+    const user3 = await User.create({
+      username: 'Anne lynn',
+      email: 'anne@gmail.com'
+    });
 
+    const user4 = await User.create({
+      username: 'marsha prono',
+      email: 'marsh@gmail.com'
+    });
 
-    const createdUsers = await User.create(users);
-    const createdThoughts = await Thought.create(thoughts);
+    const user5 = await User.create({
+      username: 'jeff prono',
+      email: 'prono@gmail.com'
+    });
 
-    console.log('Created users and thoughts.');
+    const thought1 = await Thought.create({
+      thoughtText: 'I wonder if wolves dream',
+      username: user1.username,
+    });
 
-    for (const thought of createdThoughts) {
-      const randomUser = createdUsers[Math.floor(Math.random() * createdUsers.length)];
-      randomUser.thoughts.push(thought._id);
-      await randomUser.save();
-    }
+    const thought2 = await Thought.create({
+      thoughtText: 'I wonder if bugs dream',
+      username: user2.username,
+    });
 
-    console.log('Assigned thoughts to users.');
+    const thought3 = await Thought.create({
+      thoughtText: 'I wonder if wolves sleep',
+      username: user3.username,
+    });
 
-    console.log('Database seeded successfully.');
+    const thought4 = await Thought.create({
+      thoughtText: 'I wonder if cats sleep',
+      username: user4.username,
+    });
+
+    const thought5 = await Thought.create({
+      thoughtText: 'I wonder if dogs dream',
+      username: user5.username,
+    });
+
+    user1.thoughts.push(thought1._id);
+    user2.thoughts.push(thought2._id);
+    user3.thoughts.push(thought3._id);
+    user4.thoughts.push(thought4._id);
+    user5.thoughts.push(thought5._id);
+
+    await Promise.all([user1.save(), user2.save(), user3.save(), user4.save(), user5.save()]);
+
+    console.log('Database seeded successfully');
 
     await mongoose.disconnect();
-    console.log('Disconnected from the database.');
   } catch (error) {
     console.error('Error seeding database:', error);
   }
 }
-
 
 seedDatabase();
