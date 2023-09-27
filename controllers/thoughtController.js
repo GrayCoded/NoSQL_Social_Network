@@ -5,88 +5,113 @@ module.exports = {
     async getThoughts(req, res) {
         try {
             const thoughts = await Thought.find();
+            if (!thoughts || thoughts.length === 0) {
+                return res.json([]);
+            }
+
             res.json(thoughts);
         } catch (err) {
-            res.status(500).json(err);
+            console.error(err);
+            res.status(500).json({ error: 'Internal Server Error' });
         }
     },
 
     async getSingleThought(req, res) {
         try {
-            const thought = await Thought.findOne({ _id: req.params.thoughtId })
-                .select('-__v');
+            const thoughtId = req.params.thoughtId;
+            const thought = await Thought.findOne({ _id: thoughtId }).select('-__v');
 
             if (!thought) {
-                return res.status(404).json({ message: 'No thought with that ID' });
+                return res.status(404).json({ error: 'No thought found with that ID' });
             }
 
             res.json(thought);
         } catch (err) {
-            res.status(500).json(err);
+            console.error(err);
+            res.status(500).json({ error: 'Internal Server Error' });
         }
     },
 
     async createThought(req, res) {
         try {
             const thought = await Thought.create(req.body);
-            res.json(thought);
+            res.status(201).json(thought);
         } catch (err) {
-            res.status(500).json(err);
+            console.error(err);
+            res.status(500).json({ error: 'Internal Server Error' });
         }
     },
 
     async updateThought(req, res) {
         try {
-            const thought = await Thought.findOneAndUpdate(
-                { _id: req.params.thoughtId },
+            const thoughtIdToUpdate = req.params.thoughtId;
+
+
+            const existingThought = await Thought.findById(thoughtIdToUpdate);
+
+            if (!existingThought) {
+                return res.status(404).json({ message: 'No thought with this id!' });
+            }
+
+
+            const updatedThought = await Thought.findByIdAndUpdate(
+                thoughtIdToUpdate,
                 { $set: req.body },
                 { new: true }
             );
 
-            if (!thought) {
-                return res.status(404).json({ message: 'No thought with this id!' });
-            }
-
-            res.json(thought);
+            res.json(updatedThought);
         } catch (err) {
-            console.log(err);
-            res.status(500).json(err);
+            console.error(err);
+            res.status(500).json({ error: 'Internal Server Error' });
         }
+
     },
 
     async deleteThought(req, res) {
         try {
-            const thought = await Thought.findOneAndUpdate(
-                { _id: req.params.thoughtId },
-                { $pull: { thoughts: { reactionId: req.params.reactionId } } },
-                { new: true }
-            )
+            const thoughtId = req.params.thoughtId;
+            const reactionIdToDelete = req.params.reactionId;
+            const thought = await Thought.findOne({ _id: thoughtId });
 
             if (!thought) {
                 return res.status(404).json({ message: 'No thought with this id!' });
             }
 
-            res.json(thought);
+            const reactionIndex = thought.reactions.findIndex(
+                (reaction) => reaction._id.toString() === reactionIdToDelete
+            );
+
+            if (reactionIndex === -1) {
+                return res.status(404).json({ message: 'No reaction with this id!' });
+            }
+
+            thought.reactions.splice(reactionIndex, 1);
+
+            const updatedThought = await thought.save();
+
+            res.json(updatedThought);
+
         } catch (err) {
-            res.status(500).json(err);
+            console.error(err);
+            res.status(500).json({ error: 'Internal Server Error' });
         }
     },
 
     async createReaction(req, res) {
         try {
             const dbReactionData = await Reaction.create(req.body);
-            res.json(dbReactionData);
-        } catch (err) {
-            res.status(500).json(err);
+            res.status(201).json(dbReactionData);
+            console.error(err);
+            res.status(500).json({ error: 'Internal Server Error' });
         }
     },
 
     async deleteReaction(req, res) {
         try {
-            const dbReactionData = await Reaction.findOneAndRemove(
-                { _id: req.params.reactionId },
-                { new: true }
-            )
+            const reactionIdToDelete = req.params.reactionId;
+
+            const dbReactionData = await Reaction.findOneAndDelete({ _id: reactionIdToDelete });
 
             if (!dbReactionData) {
                 return res.status(404).json({ message: 'No reaction with this id!' });
@@ -94,7 +119,8 @@ module.exports = {
 
             res.json(dbReactionData);
         } catch (err) {
-            res.status(500).json(err);
+            console.error(err);
+            res.status(500).json({ error: 'Internal Server Error' });
         }
     }
 
