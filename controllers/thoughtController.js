@@ -102,6 +102,7 @@ module.exports = {
         try {
             const dbReactionData = await Reaction.create(req.body);
             res.status(201).json(dbReactionData);
+        } catch (err) {
             console.error(err);
             res.status(500).json({ error: 'Internal Server Error' });
         }
